@@ -17,9 +17,9 @@ servers:
 # Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
 #
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
-# proxy:
-#   ssl: true
-#   host: app.example.com
+proxy:
+  ssl: false
+  host: 13.206.206.81
 
 # Credentials for your image host.
 registry:
@@ -75,7 +75,7 @@ builder:
 ssh:
   user: ubuntu
   keys:
-    - ~/.ssh/rails-learning-key.pem
+    - .kamal/github_actions_key
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
