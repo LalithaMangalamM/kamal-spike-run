@@ -1,4 +1,4 @@
-name: Deploy Rails App
+name: Deploy Staging
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
       - name: Checkout code
@@ -20,22 +21,23 @@ jobs:
           bundler-cache: true
 
       - name: Install Kamal
-        run: |
-          gem install kamal
+        run: gem install kamal
 
       - name: Login to Docker Hub
         run: |
           echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login \
             -u "${{ secrets.DOCKER_USERNAME }}" \
             --password-stdin
+
       - name: Setup SSH key
         run: |
           mkdir -p .kamal
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
-      - name: Deploy with Kamal
+
+      - name: Deploy to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
-          kamal deploy
+          kamal deploy -d staging
