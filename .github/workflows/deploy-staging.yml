@@ -47,13 +47,13 @@ jobs:
             -t lalithamangalamm/kamal_spike_run:${{ steps.image.outputs.tag }} \
             --push .
 
-      - name: Deploy staging
+      - name: Deploy to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          kamal deploy -d staging \
-            -P image_tag=${{ steps.image.outputs.tag }}
+          kamal deploy -d staging
 
       - name: Save image tag
         run: |
