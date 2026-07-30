@@ -5,9 +5,4 @@ services:
       - "3000:80"
     environment:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-    secrets:
-      - rails_master_key
 
-secrets:
-  rails_master_key:
-    file: ./config/master.key
