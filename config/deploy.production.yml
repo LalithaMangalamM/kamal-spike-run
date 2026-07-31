@@ -15,3 +15,9 @@ servers:
 proxy:
   ssl: false
   host: 13.127.132.99
+
+env:
+  clear:
+    ENVIRONMENT: production
+  secret:
+    - RAILS_MASTER_KEY
