@@ -2,11 +2,6 @@ name: Deploy Production
 
 on:
   workflow_dispatch:
-    inputs:
-      image_tag:
-        description: "Docker image tag to deploy"
-        required: true
-        type: string
 
 jobs:
   deploy:
@@ -20,7 +15,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2.1"
+          ruby-version: '3.2.1'
           bundler-cache: true
 
       - name: Install Kamal
@@ -34,7 +29,7 @@ jobs:
 
       - name: Setup SSH key
         run: |
-          mkdir -p ~/.ssh
+          mkdir -p .kamal
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
 
@@ -42,6 +37,5 @@ jobs:
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          IMAGE_TAG: ${{ github.event.inputs.image_tag }}
         run: |
           kamal deploy
