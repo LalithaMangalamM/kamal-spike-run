@@ -15,7 +15,3 @@ servers:
 proxy:
   ssl: false
   host: 13.127.132.99
-
-# Add this block to isolate the proxy settings for this environment destination
-boot:
-  provenance: false
