@@ -1,11 +1,12 @@
-name: Promote to Production
+name: Deploy Production
 
 on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Image SHA to deploy"
+        description: "Docker image tag to deploy"
         required: true
+        type: string
 
 jobs:
   deploy:
@@ -13,27 +14,34 @@ jobs:
     environment: production
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2.1'
+          ruby-version: "3.2.1"
           bundler-cache: true
 
       - name: Install Kamal
         run: gem install kamal
 
-      - name: Login Docker
+      - name: Login to Docker Hub
         run: |
           echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login \
             -u "${{ secrets.DOCKER_USERNAME }}" \
             --password-stdin
 
-      - name: Deploy Production
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
+          chmod 600 .kamal/github_actions_key
+
+      - name: Deploy to Production
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          IMAGE_TAG: ${{ inputs.image_tag }}
+          IMAGE_TAG: ${{ github.event.inputs.image_tag }}
         run: |
-          kamal deploy -d production
+          kamal deploy

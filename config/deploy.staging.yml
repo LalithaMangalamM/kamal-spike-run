@@ -23,5 +23,3 @@ ssh:
   user: ubuntu
   keys:
     - .kamal/github_actions_key
-tag:
-  - <%= ENV["IMAGE_TAG"] %>
