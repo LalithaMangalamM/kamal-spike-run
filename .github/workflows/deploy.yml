@@ -49,7 +49,7 @@ jobs:
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_VERSION: ${{ github.sha }}
+          KAMAL_VERSION: ${{ github.sha }}   # Kamal 1 natively picks this variable up
         run: |
           kamal deploy -d staging
 
@@ -65,7 +65,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.commit_sha }} # Pulls the exact code state of the staging build
+          ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -93,6 +93,6 @@ jobs:
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_VERSION: ${{ github.event.inputs.commit_sha }} # Reuses the staging registry image tag
+          KAMAL_VERSION: ${{ github.event.inputs.commit_sha }} # Pulls specific image version
         run: |
           kamal deploy -d production --skip-push
