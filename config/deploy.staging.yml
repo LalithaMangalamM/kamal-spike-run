@@ -1,4 +1,4 @@
-service: kamal_spike_run_staging
+service: kamal_spike_run
 # Deploy to these servers.
 servers:
   web:
