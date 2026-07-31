@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy-staging:
+  deploy:
     runs-on: ubuntu-latest
     environment: staging
 
@@ -35,26 +35,9 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
 
-      - name: Generate image tag
-        id: image
-        run: |
-          echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
-
-      - name: Build and push image
-        run: |
-          docker buildx build \
-            --platform linux/amd64 \
-            -t lalithamangalamm/kamal_spike_run:${{ steps.image.outputs.tag }} \
-            --push .
-
-      - name: Deploy staging
+      - name: Deploy to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
-          kamal deploy -d staging \
-            -P image_tag=${{ steps.image.outputs.tag }}
-
-      - name: Save image tag
-        run: |
-          echo "${{ steps.image.outputs.tag }}" > image_tag.txt
+          kamal deploy -d staging
