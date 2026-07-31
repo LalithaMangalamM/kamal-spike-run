@@ -4,10 +4,20 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Git SHA / Version to promote to Production'
+        required: true
 
 jobs:
-  deploy:
+  # ----------------------------------------------------
+  # JOB 1: Deploy to Staging (Triggered automatically on merge to main)
+  # ----------------------------------------------------
+  deploy-staging:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    environment: staging               # Maps to your Staging GitHub Environment
 
     steps:
       - name: Checkout code
@@ -28,14 +38,61 @@ jobs:
           echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login \
             -u "${{ secrets.DOCKER_USERNAME }}" \
             --password-stdin
+
       - name: Setup SSH key
         run: |
           mkdir -p .kamal
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
-      - name: Deploy with Kamal
+
+      - name: Deploy with Kamal to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_VERSION: ${{ github.sha }}
         run: |
-          kamal deploy
+          kamal deploy -d staging
+
+  # ----------------------------------------------------
+  # JOB 2: Promote to Production (Triggered manually via Actions tab)
+  # ----------------------------------------------------
+  promote-production:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production            # Maps to your Production GitHub Environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit_sha }} # Pulls the exact code state of the staging build
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.1'
+          bundler-cache: true
+
+      - name: Install Kamal
+        run: |
+          gem install kamal
+
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.KAMAL_REGISTRY_PASSWORD }}" | docker login \
+            -u "${{ secrets.DOCKER_USERNAME }}" \
+            --password-stdin
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p .kamal
+          echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
+          chmod 600 .kamal/github_actions_key
+
+      - name: Promote to Production (Skip Build)
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_VERSION: ${{ github.event.inputs.commit_sha }} # Reuses the staging registry image tag
+        run: |
+          kamal deploy -d production --skip-push
