@@ -4,20 +4,17 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: 'Git SHA / Version to promote to Production'
-        required: true
 
 jobs:
   # ----------------------------------------------------
-  # JOB 1: Deploy to Staging (Triggered automatically on merge to main)
+  # JOB 1: Build Image + Deploy to Staging
   # ----------------------------------------------------
   deploy-staging:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    environment: staging               # Maps to your Staging GitHub Environment
+    environment: staging
+
+    outputs:
+      image_tag: ${{ steps.image.outputs.tag }}
 
     steps:
       - name: Checkout code
@@ -26,12 +23,11 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2.1'
+          ruby-version: "3.2.1"
           bundler-cache: true
 
       - name: Install Kamal
-        run: |
-          gem install kamal
+        run: gem install kamal
 
       - name: Login to Docker Hub
         run: |
@@ -45,37 +41,42 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
 
-      - name: Deploy with Kamal to Staging
+      # Save the image tag (Git SHA)
+      - name: Save image tag
+        id: image
+        run: |
+          echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_VERSION: ${{ github.sha }}   # Kamal 1 natively picks this variable up
+          KAMAL_VERSION: ${{ github.sha }}
         run: |
           kamal deploy -d staging
 
   # ----------------------------------------------------
-  # JOB 2: Promote to Production (Triggered manually via Actions tab)
+  # JOB 2: Deploy SAME image to Production
   # ----------------------------------------------------
-  promote-production:
-    if: github.event_name == 'workflow_dispatch'
+  deploy-production:
+    needs: deploy-staging
     runs-on: ubuntu-latest
-    environment: production            # Maps to your Production GitHub Environment
+
+    # GitHub pauses here waiting for approval
+    environment: production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2.1'
+          ruby-version: "3.2.1"
           bundler-cache: true
 
       - name: Install Kamal
-        run: |
-          gem install kamal
+        run: gem install kamal
 
       - name: Login to Docker Hub
         run: |
@@ -89,10 +90,10 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
           chmod 600 .kamal/github_actions_key
 
-      - name: Promote to Production (Skip Build)
+      - name: Deploy to Production
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_VERSION: ${{ github.event.inputs.commit_sha }} # Pulls specific image version
+          KAMAL_VERSION: ${{ needs.deploy-staging.outputs.image_tag }}
         run: |
           kamal deploy -d production --skip-push
