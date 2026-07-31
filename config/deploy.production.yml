@@ -1,3 +1,4 @@
+service: kamal_spike_run_production
 # Deploy to these servers.
 servers:
   web:
