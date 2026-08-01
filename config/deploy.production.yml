@@ -2,7 +2,7 @@ service: kamal_spike_run
 # Deploy to these servers.
 servers:
   web:
-    - 13.206.207.36
+    - 13.232.44.90
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -14,7 +14,7 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: false
-  host: 13.206.207.36
+  host: 13.232.44.90
 
 env:
   clear:
