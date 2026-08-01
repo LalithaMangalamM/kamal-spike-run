@@ -19,6 +19,7 @@ test:
   <% end %>
 
 production:
+  adapter: postgresql
   url: <%= ENV['DATABASE_URL'] %>
   variables:
     statement_timeout: <%= ENV["STATEMENT_TIMEOUT"] || "5s" %>
