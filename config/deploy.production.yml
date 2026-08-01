@@ -20,4 +20,5 @@ env:
   clear:
     ENVIRONMENT: production
   secret:
+    - DATABASE_URL
     - RAILS_MASTER_KEY

@@ -20,4 +20,5 @@ env:
   clear:
     ENVIRONMENT: staging
   secret:
+    - DATABASE_URL
     - RAILS_MASTER_KEY
