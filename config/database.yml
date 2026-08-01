@@ -1,0 +1,24 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: kamal_spike_run_development
+  pool: 5
+  prepared_statements: false
+  variables:
+    statement_timeout: <%= ENV["STATEMENT_TIMEOUT"] || "5s" %>
+  <% if ENV["NIX"] == "true" %>
+  host: <%= Dir.pwd %>/pgdata
+  <% end %>
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: kamal_spike_run_test
+  pool: 5
+  <% if ENV["NIX"] == "true" %>
+  host: <%= Dir.pwd %>/pgdata
+  <% end %>
+
+production:
+  url: <%= ENV['DATABASE_URL'] %>
+  variables:
+    statement_timeout: <%= ENV["STATEMENT_TIMEOUT"] || "5s" %>
