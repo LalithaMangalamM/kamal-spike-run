@@ -52,6 +52,7 @@ jobs:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_VERSION: ${{ github.sha }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           kamal deploy -d staging
 
@@ -95,5 +96,6 @@ jobs:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_VERSION: ${{ needs.deploy-staging.outputs.image_tag }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           kamal deploy -d production --skip-push
