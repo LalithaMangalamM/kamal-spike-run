@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+`kamal app exec -p -d $KAMAL_DESTINATION --version $KAMAL_VERSION "rails db:migrate"`
