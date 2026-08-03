@@ -1,3 +1,6 @@
 #!/bin/bash
+set -e
 
-kamal app exec -d staging "bin/rails db:migrate"
+DESTINATION="${KAMAL_DESTINATION:-staging}"
+
+kamal app exec -d "$DESTINATION" "bin/rails db:migrate"
