@@ -1,4 +1,17 @@
 #!/bin/bash
 set -e
 
-kamal app exec -p -d $KAMAL_DESTINATION --version $KAMAL_VERSION "rails db:migrate"
+echo "Starting pre-deploy migration..."
+echo "Destination: ${KAMAL_DESTINATION}"
+echo "Version: ${KAMAL_VERSION}"
+
+echo "Running database migrations..."
+
+kamal app exec \
+  -p \
+  -d "${KAMAL_DESTINATION}" \
+  --version "${KAMAL_VERSION}" \
+  "bin/rails db:migrate"
+
+echo "Database migration completed successfully."
+echo "Proceeding with deployment..."
