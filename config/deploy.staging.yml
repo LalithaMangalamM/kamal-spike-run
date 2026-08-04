@@ -19,6 +19,7 @@ proxy:
 env:
   clear:
     ENVIRONMENT: staging
+    SERVER_IP: "%h"
   secret:
     - DATABASE_URL
     - RAILS_MASTER_KEY
