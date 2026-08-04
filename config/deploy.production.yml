@@ -1,5 +1,8 @@
 service: kamal_spike_run
 # Deploy to these servers.
+boot:
+  limit: 1 # Deploy to 1 server at a time (rolling update)
+
 servers:
   web:
     hosts:
@@ -17,6 +20,10 @@ servers:
 proxy:
   ssl: false
   host: kamal-prod-176099216.ap-south-1.elb.amazonaws.com
+  healthcheck:
+    path: /up            # Default Rails 7.1+ health check route
+    interval: 3          # Check every 3 seconds
+    timeout: 5           # Wait up to 5 seconds for a response
 env:
   clear:
     ENVIRONMENT: production
