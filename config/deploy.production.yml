@@ -1,8 +1,20 @@
+# Application identifier
 service: kamal_spike_run
-# Deploy to these servers.
-boot:
-  limit: 1 # Deploy to 1 server at a time (rolling update)
 
+# Container image
+image: lalithamangalamm/kamal_spike_run
+
+# Registry authentication
+registry:
+  username: lalithamangalamm
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Rolling update strategy
+boot:
+  limit: 1
+
+# Production servers
 servers:
   web:
     hosts:
@@ -12,22 +24,17 @@ servers:
     hosts:
       - 13.206.209.219
     cmd: bundle exec sidekiq
-  # job:
-  #   hosts:
-  #     - 192.168.0.1
-  #   cmd: bin/jobs
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
-# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
-#
-# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
+# Proxy configuration
 proxy:
   ssl: false
   host: 3.110.105.199
   healthcheck:
-    path: /up            # Default Rails 7.1+ health check route
-    interval: 3          # Check every 3 seconds
-    timeout: 5           # Wait up to 5 seconds for a response
+    path: /up
+    interval: 3
+    timeout: 5
+
+# Environment variables
 env:
   clear:
     ENVIRONMENT: production
@@ -36,3 +43,24 @@ env:
     - DATABASE_URL
     - RAILS_MASTER_KEY
     - REDIS_URL
+
+# Asset bridging between deployments
+asset_path: /rails/public/assets
+
+# Docker image builder
+builder:
+  arch: amd64
+
+# SSH settings
+# Note: Remove `keys:` or update to your local path (e.g., ~/.ssh/id_rsa) for local terminal access.
+ssh:
+  user: ubuntu
+  keys:
+    - .kamal/github_actions_key
+
+# Command aliases
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
