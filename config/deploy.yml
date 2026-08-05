@@ -3,10 +3,3 @@ service: kamal_spike_run
 
 # Name of the container image
 image: lalithamangalamm/kamal_spike_run
-
-logging:
-  driver: awslogs
-  options:
-    awslogs-region: ap-south-1            # Replace with your AWS region
-    awslogs-group: /aws/ec2/kamal_spike_run # Name of your CloudWatch log group
-    awslogs-create-group: "true"
