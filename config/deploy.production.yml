@@ -51,12 +51,8 @@ asset_path: /rails/public/assets
 builder:
   arch: amd64
 
-# SSH settings
-# Note: Remove `keys:` or update to your local path (e.g., ~/.ssh/id_rsa) for local terminal access.
 ssh:
   user: ubuntu
-  keys:
-    - .kamal/github_actions_key
 
 # Command aliases
 aliases:

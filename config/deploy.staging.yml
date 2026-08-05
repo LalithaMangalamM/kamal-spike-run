@@ -46,8 +46,6 @@ builder:
 # Note: For local commands to work, use standard local keys or remove `keys:` if using default ~/.ssh/id_rsa/ed25519
 ssh:
   user: ubuntu
-  keys:
-    - .kamal/github_actions_key
 
 # Command aliases
 aliases:

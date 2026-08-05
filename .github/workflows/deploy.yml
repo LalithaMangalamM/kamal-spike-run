@@ -47,6 +47,12 @@ jobs:
         run: |
           echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p .kamal
+          echo "${{ secrets.EC2_SSH_KEY }}" > .kamal/github_actions_key
+          chmod 600 .kamal/github_actions_key
+
       - name: Deploy to Staging
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
