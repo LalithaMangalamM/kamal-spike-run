@@ -8,10 +8,9 @@ echo "Version: ${KAMAL_VERSION}"
 echo "Running database migrations..."
 
 kamal app exec \
-  -p \
-  -d "${KAMAL_DESTINATION}" \
+  -c "config/deploy.${KAMAL_DESTINATION}.yml" \
   --version "${KAMAL_VERSION}" \
-  "bin/rails db:migrate"
+  -- "bin/rails db:migrate"
 
 echo "Database migration completed successfully."
 echo "Proceeding with deployment..."
