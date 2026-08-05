@@ -23,7 +23,7 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: false
-  host: kamal-prod-176099216.ap-south-1.elb.amazonaws.com
+  host: 3.110.105.199
   healthcheck:
     path: /up            # Default Rails 7.1+ health check route
     interval: 3          # Check every 3 seconds
