@@ -6,8 +6,12 @@ boot:
 servers:
   web:
     hosts:
-      - 13.207.51.22
-      - 13.203.223.28
+      - 3.110.105.199
+
+  worker:
+    hosts:
+      - 13.206.209.219
+    cmd: bundle exec sidekiq
   # job:
   #   hosts:
   #     - 192.168.0.1
