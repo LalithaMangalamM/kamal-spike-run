@@ -2,13 +2,20 @@
 set -e
 
 echo "Starting pre-deploy migration..."
-echo "Destination: ${KAMAL_DESTINATION}"
+echo "Destination: ${KAMAL_DESTINATION:-N/A}"
 echo "Version: ${KAMAL_VERSION}"
 
+# Determine which config file to use:
+# 1. Use KAMAL_CONFIG_FILE if set by Kamal
+# 2. Or build it from KAMAL_DESTINATION if KAMAL_DESTINATION exists
+# 3. Fall back to config/deploy.yml
+CONFIG_FILE="${KAMAL_CONFIG_FILE:-config/deploy.${KAMAL_DESTINATION}.yml}"
+
+echo "Using config file: ${CONFIG_FILE}"
 echo "Running database migrations..."
 
 kamal app exec \
-  -c "config/deploy.${KAMAL_DESTINATION}.yml" \
+  -c "${CONFIG_FILE}" \
   --version "${KAMAL_VERSION}" \
   -- "bin/rails db:migrate"
 
