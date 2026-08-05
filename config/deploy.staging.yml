@@ -28,3 +28,4 @@ env:
   secret:
     - DATABASE_URL
     - RAILS_MASTER_KEY
+    - REDIS_URL
