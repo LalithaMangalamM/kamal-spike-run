@@ -1,0 +1,5 @@
+# Name of your application
+service: kamal_spike_run
+
+# Name of the container image
+image: lalithamangalamm/kamal_spike_run
