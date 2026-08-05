@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
   # GET /users or /users.json
   def index
-    @users = User.all
+    @users = User.order(id: :desc).all
   end
 
   # GET /users/1 or /users/1.json
@@ -55,6 +55,12 @@ class UsersController < ApplicationController
       format.html { redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
+  end
+
+  def create_fake_user
+    CreateUserJob.perform_now
+
+    redirect_to users_path, notice: "User creation has been queued."
   end
 
   private
