@@ -55,7 +55,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
         run: |
-          kamal deploy -d staging
+          kamal deploy -c config/deploy.staging.yml
 
   # ----------------------------------------------------
   # JOB 2: Deploy SAME image to Production
@@ -100,4 +100,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
         run: |
-          kamal deploy -d production --skip-push
+          kamal deploy -c config/deploy.production.yml --skip-push
