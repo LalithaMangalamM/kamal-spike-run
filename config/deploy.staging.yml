@@ -51,5 +51,5 @@ ssh:
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
   shell: app exec --interactive --reuse "bash"
-  logs: app logs -f
+  staging-logs: app logs -d staging -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
