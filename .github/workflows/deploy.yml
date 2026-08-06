@@ -48,7 +48,7 @@ jobs:
           echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
       - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
@@ -92,7 +92,7 @@ jobs:
             --password-stdin
 
       - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
