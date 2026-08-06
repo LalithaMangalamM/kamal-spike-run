@@ -5,17 +5,7 @@ echo "=== [Post-Deploy] Running parallel Docker cleanup across all target hosts 
 
 DEST=${KAMAL_DESTINATION:-production}
 
-# Pass commands cleanly separated by semicolons
-kamal server exec -d "$DEST" -- "
-  echo '1. Removing stopped/dead containers...';
-  docker container prune -f --filter 'until=1h';
-
-  echo '2. Retaining last 3 application images...';
-  docker images 'lalithamangalamm/kamal_spike_run' --format '{{.ID}} {{.CreatedAt}}' | sort -k2,3 -r | tail -n +3 | awk '{print \$1}' | xargs -r docker rmi -f || true;
-
-  echo '3. Clearing BuildKit build cache and dangling layers...';
-  docker builder prune -f --filter 'until=24h';
-  docker image prune -f;
-"
+# Double ampersands cleanly chain commands across SSH execution without producing double semicolons
+kamal server exec -d "$DEST" -- "docker container prune -f && docker images 'lalithamangalamm/kamal_spike_run' --format '{{.ID}} {{.CreatedAt}}' | sort -k2,3 -r | tail -n +2 | awk '{print \$1}' | xargs -r docker rmi -f || true && docker builder prune -f && docker image prune -f"
 
 echo "=== Post-deploy cleanup complete on all hosts ==="
