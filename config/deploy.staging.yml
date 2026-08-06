@@ -13,16 +13,16 @@ registry:
 # Deploy to these servers
 servers:
   web:
-    - 13.206.144.236
+    - 52.66.133.94
   worker:
     hosts:
-      - 15.206.117.128
+      - 65.2.132.112
     cmd: bundle exec sidekiq
 
 # Proxy configuration
 proxy:
   ssl: false
-  host: 13.206.144.236
+  host: 52.66.133.94
 
 # Environment variables
 env:

@@ -18,17 +18,17 @@ boot:
 servers:
   web:
     hosts:
-      - 3.110.105.199
+      - 13.206.187.176
 
   worker:
     hosts:
-      - 13.206.209.219
+      - 13.207.4.241
     cmd: bundle exec sidekiq
 
 # Proxy configuration
 proxy:
   ssl: false
-  host: 3.110.105.199
+  host: 13.206.187.176
   healthcheck:
     path: /up
     interval: 3
