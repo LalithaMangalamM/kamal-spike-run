@@ -25,6 +25,12 @@ servers:
       - 13.207.4.241
     cmd: bundle exec sidekiq
 
+logging:
+  driver: awslogs
+  options:
+    awslogs-region: ap-south-1
+    awslogs-group: /kamal-spike-run/production
+
 # Proxy configuration
 proxy:
   ssl: false
