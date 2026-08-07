@@ -31,7 +31,6 @@ module KamalSpikeRun
     # Force colorized ANSI codes in production/staging logs
     config.colorize_logging = true
 
-    
     # Ensure stdout logger format retains ANSI codes
     if ENV["RAILS_LOG_TO_STDOUT"].present?
       logger           = ActiveSupport::Logger.new(STDOUT)
