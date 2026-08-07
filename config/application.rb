@@ -29,7 +29,7 @@ module KamalSpikeRun
     config.autoload_lib(ignore: %w[assets tasks])
     config.active_job.queue_adapter = :sidekiq
     # Force colorized ANSI codes in production/staging logs
-    config.colorized_logging = true
+    config.colorize_logging = true
 
     # Ensure stdout logger format retains ANSI codes
     if ENV["RAILS_LOG_TO_STDOUT"].present?
