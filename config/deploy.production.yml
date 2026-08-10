@@ -18,11 +18,12 @@ boot:
 servers:
   web:
     hosts:
-      - 13.206.187.176
+      - 3.6.89.22
+      - 35.154.235.127
 
   worker:
     hosts:
-      - 13.207.4.241
+      - 3.111.38.170
     cmd: bundle exec sidekiq
 
 logging:
@@ -34,7 +35,7 @@ logging:
 # Proxy configuration
 proxy:
   ssl: false
-  host: 13.206.187.176
+  host: production-load-balancer-218625149.ap-south-1.elb.amazonaws.com
   healthcheck:
     path: /up
     interval: 3
